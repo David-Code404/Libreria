@@ -9,35 +9,37 @@
             <button class="btn btn-success" type="submit">Guardar</button>
           </div>
 
+          <!-- Campo de Nombre del Producto -->
           <label for="nombre" class="text-light">Nombre del Producto:</label>
           <input
             type="text"
             name="nombre"
             class="form-control bg-dark text-light mb-3"
             placeholder="Nombre"
-            
             required
           />
 
+          <!-- Campo de Descripción -->
           <label for="descripcion" class="text-light">Descripción:</label>
           <textarea
             name="descripcion"
-            
             class="form-control bg-dark text-light mb-3"
             placeholder="Descripción"
             required
           ></textarea>
 
+          <!-- Campo de Precio -->
           <label for="precio" class="text-light">Precio:</label>
           <input
             type="number"
-            
             name="precio"
             class="form-control bg-dark text-light mb-3"
             placeholder="Precio"
+            step="0.01"
             required
           />
 
+          <!-- Campo de Cantidad -->
           <label for="cantidad" class="text-light">Cantidad:</label>
           <input
             type="number"
@@ -47,6 +49,7 @@
             required
           />
 
+          <!-- Campo de URL de Imagen -->
           <label for="url_imagen" class="text-light">URL de la Imagen:</label>
           <input
             type="url"
@@ -55,6 +58,19 @@
             placeholder="URL de la imagen"
             required
           />
+
+          <!-- Selección de Categoría -->
+          <label for="categoria_id" class="text-light">Categoría:</label>
+          <select
+            name="categoria_id"
+            class="form-control bg-dark text-light mb-3"
+            required
+          >
+            <option value="" disabled selected>Seleccione una categoría</option>
+            {{#each categorias}}
+              <option value="{{this.id}}">{{this.id}}</option>
+            {{/each}}
+          </select>
         </form>
       </div>
     </div>

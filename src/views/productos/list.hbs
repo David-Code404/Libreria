@@ -5,6 +5,7 @@
         <div class="card text-center bg-dark text-light h-100">
           <div class="card-body">
             <a href="{{url_imagen}}" target="_blank" class="text-light">
+              <img src="{{url_imagen}}" alt="{{nombre}}" class="img-fluid product-image" />
               <h3 class="card-title text-uppercase">
                 {{nombre}}
               </h3>
@@ -19,9 +20,7 @@
             <a class="btn btn-danger" href="/productos/delete/{{id}}">
               Eliminar Producto
             </a>
-            <a class="btn btn-secondary" href="/productos/edit/{{id}}">
-              Editar
-            </a>
+            <a href="/productos/edit/{{id}}" class="btn btn-warning">Editar</a>
           </div>
         </div>
       </div>

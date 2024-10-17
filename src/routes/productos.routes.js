@@ -3,7 +3,7 @@ import { isLoggedIn } from "../middlewares/protectedRoutes.js"; // Middleware pa
 import { validator } from "../middlewares/validator.middleware.js"; // Middleware para validar datos
 import {
   renderAddProducto,
-  addProducto,           // Asegúrate de que este nombre coincida exactamente
+  addProducto,
   renderProductos,
   deleteProducto,
   editProducto,
@@ -16,9 +16,9 @@ const router = Router();
 // Rutas para productos
 router.get("/", isLoggedIn, renderProductos); // Renderiza la lista de productos
 router.get("/add", isLoggedIn, renderAddProducto); // Renderiza el formulario para agregar un nuevo producto
-router.post("/add", isLoggedIn, validator(createProductSchema), addProducto); // Agrega un nuevo producto
-router.get("/delete/:id", isLoggedIn, deleteProducto); // Elimina un producto por ID
-router.get("/edit/:id", isLoggedIn, renderEditProducto); // Renderiza el formulario para editar un producto
-router.post("/edit/:id", isLoggedIn, editProducto); // Actualiza un producto por ID
+router.post("/add", isLoggedIn, validator(createProductSchema), addProducto); // Maneja la creación de un producto
+router.get("/delete/:id", isLoggedIn, deleteProducto); // Maneja la eliminación de un producto
+router.get("/edit/:id", isLoggedIn, renderEditProducto); // Renderiza el formulario de edición de un producto
+router.post("/edit/:id", isLoggedIn, editProducto); // Maneja la actualización de un producto
 
-export default router; // Exporta el router
+export default router;

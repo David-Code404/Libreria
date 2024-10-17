@@ -11,7 +11,6 @@
                 class="form-control bg-dark text-light"
                 placeholder="Nombre del Producto"
                 value="{{producto.nombre}}"
-                autofocus
                 required
               />
             </div>
@@ -54,7 +53,26 @@
                 value="{{producto.url_imagen}}"
               />
             </div>
-            
+
+            <!-- Selección de Categoría (iterando dinámicamente) -->
+            <div class="form-group">
+              <label for="categoria_id" class="text-light">Categoría:</label>
+              <select
+                name="categoria_id"
+                class="form-control bg-dark text-light"
+                required
+              >
+                <option value="" disabled>Seleccione una categoría</option>
+                {{#each categorias}}
+                  <option value="{{this.id}}" 
+                    {{#ifCond this.id '===' ../producto.categoria_id}}selected{{/ifCond}} 
+                  >
+                    {{this.nombre}}
+                  </option>
+                {{/each}}
+              </select>
+            </div>
+
             <div class="form-group">
               <button class="btn btn-success btn-block">
                 Guardar
