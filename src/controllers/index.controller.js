@@ -1,3 +1,4 @@
+/*No Tocar */
 import { pool } from "../database.js";
 
 export const renderIndex = (req, res) => res.render("index");

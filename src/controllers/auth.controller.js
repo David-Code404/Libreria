@@ -1,3 +1,4 @@
+/* No Tocar */
 import passport from "passport";
 import { encryptPassword } from "../lib/helpers.js";
 import { pool } from "../database.js";
@@ -9,26 +10,33 @@ export const signUp = async (req, res, next) => {
 
   const password = await encryptPassword(password1);
 
-  // Saving in the Database
-  const [result] = await pool.query("INSERT INTO users SET ? ", {
-    fullname,
-    email,
-    password,
-  });
-
-  req.login(
-    {
-      id: result.insertId,
+  try {
+    // Guardando en la base de datos
+    const [result] = await pool.query("INSERT INTO users SET ?", {
       fullname,
       email,
-    },
-    (err) => {
-      if (err) {
-        return next(err);
+      password,
+    });
+
+    req.login(
+      {
+        id: result.insertId,
+        fullname,
+        email,
+      },
+      (err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.redirect("/productos"); // Cambiado a productos si es necesario
       }
-      return res.redirect("/links");
-    }
-  );
+    );
+  } catch (error) {
+    // Manejo de errores
+    console.error("Error al crear usuario:", error);
+    req.flash("error", "Error al crear usuario, intente de nuevo.");
+    res.redirect("/signup");
+  }
 };
 
 export const renderSignIn = (req, res) => {
@@ -36,7 +44,7 @@ export const renderSignIn = (req, res) => {
 };
 
 export const signIn = passport.authenticate("local.signin", {
-  successRedirect: "/links",
+  successRedirect: "/productos", // Cambiado a productos si es necesario
   failureRedirect: "/signin",
   passReqToCallback: true,
   failureFlash: true,

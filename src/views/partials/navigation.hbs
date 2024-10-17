@@ -2,7 +2,7 @@
   <div class="container">
     <a class="navbar-brand" href="/">
       <i class="fas fa-link"></i>
-      Favorite Links
+      Libreria-SIS324
     </a>
     <button
       class="navbar-toggler"
@@ -18,48 +18,71 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         {{#if user}}
+          <!-- Productos Dropdown -->
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
               href="#"
-              id="navbarDropdown"
+              id="navbarDropdownProductos"
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              links
+              Productos
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="/links">All Links</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownProductos">
+              <a class="dropdown-item" href="/productos">Productos</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/links/add">Add A Link</a>
+              <a class="dropdown-item" href="/productos/add">Añadir Productos</a>
             </div>
           </li>
+
+          <!-- Categories Dropdown -->
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
               href="#"
-              id="navbarDropdown"
+              id="navbarDropdownCategories"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Categorias
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownCategories">
+              <a class="dropdown-item" href="/categorias">Categorias</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/categorias/add">Añadir Categorias</a>
+            </div>
+          </li>
+
+          <!-- User Dropdown -->
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdownUser"
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
               {{user.fullname}}
             </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="/profile">Profile</a></li>
-              <li><a class="dropdown-item" href="/logout">Logout</a></li>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownUser">
+              <li><a class="dropdown-item" href="/profile">Perfil</a></li>
+              <li><a class="dropdown-item" href="/logout">Salir</a></li>
             </ul>
           </li>
         {{else}}
           <li class="nav-item">
-            <a class="nav-link" href="/signin">SignIn</a>
+            <a class="nav-link" href="/signin">Ingresar</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/signup">SignUp</a>
+            <a class="nav-link" href="/signup">Registrarse</a>
           </li>
         {{/if}}
       </ul>
     </div>
   </div>
 </nav>
+
