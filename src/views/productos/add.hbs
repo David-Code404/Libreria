@@ -59,17 +59,19 @@
             required
           />
 
-          <!-- Selección de Categoría -->
-          <label for="categoria_id" class="text-light">Categoría:</label>
-          <select
-            name="categoria_id"
-            class="form-control bg-dark text-light mb-3"
-            required
-          >
-            <option value="" disabled selected>Seleccione una categoría</option>
-            {{#each categorias}}
-              <option value="{{this.id}}">{{this.id}}</option>
-            {{/each}}
+<!-- Selección de Categoría -->
+<label for="categoria_id" class="text-light">Categoría:</label>
+<select
+  name="categoria_id"
+  class="form-control bg-dark text-light mb-3"
+  required
+>
+  <option value="" disabled selected>Seleccione una categoría</option>
+  {{#each categorias}}
+    <option value="{{this.id}}">{{this.nombre}}</option>
+  {{/each}}
+</select>
+
           </select>
         </form>
       </div>
