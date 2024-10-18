@@ -1,4 +1,4 @@
-/*No Tocar Esta PArte por nada */
+/* No Tocar Esta Parte por nada */
 import express from "express";
 import morgan from "morgan";
 import path from "path";
@@ -9,6 +9,7 @@ import flash from "connect-flash";
 import session from "express-session";
 import expressMySQLSession from "express-mysql-session";
 import { promiseConnectFlash } from "async-connect-flash";
+import Handlebars from "handlebars"; // Importa Handlebars aquí
 
 import { fileURLToPath } from "url";
 
@@ -34,6 +35,11 @@ app.engine(
   }).engine
 );
 app.set("view engine", ".hbs");
+
+// Registrar el helper eq
+Handlebars.registerHelper('eq', function(a, b) {
+  return a === b;
+});
 
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
@@ -79,5 +85,3 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
-
-

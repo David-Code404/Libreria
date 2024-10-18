@@ -65,50 +65,57 @@ export const deleteProducto = async (req, res) => {
 
 // Función para renderizar el formulario de edición
 export const renderEditProducto = async (req, res) => {
-  const { id } = req.params; // Obtener el ID del producto
+  const { id } = req.params; // Obtiene el ID del producto desde la URL
   try {
-    const [producto] = await pool.query(
-      "SELECT * FROM productos WHERE id = ?",
-      [id]
-    );
+    // Consulta el producto de la base de datos
+    const [producto] = await pool.query("SELECT * FROM productos WHERE id = ?", [id]);
 
     if (producto.length === 0) {
       req.setFlash("error", "Producto no encontrado");
       return res.redirect("/productos");
     }
 
-    const [categorias] = await pool.query("SELECT * FROM categorias"); // Obtener categorías para el selector
+    // Obtiene las categorías para el selector de categorías en la vista
+    const [categorias] = await pool.query("SELECT * FROM categorias");
+    // Renderiza la vista de edición, pasando los datos del producto y las categorías
     res.render("productos/edit", { producto: producto[0], categorias });
   } catch (error) {
     console.error(error);
     req.setFlash("error", "Error al obtener el producto");
-    res.redirect("/productos");
+    return res.redirect("/productos");
   }
 };
 
+
 // Función para actualizar un producto
+// Controlador para actualizar un producto
 export const editProducto = async (req, res) => {
   const { id } = req.params; // Obtener el ID del producto
   const { nombre, descripcion, precio, cantidad, url_imagen, categoria_id } =
     req.body;
 
   try {
+    // Verificar que la categoría existe
     const categoriaExists = await verificarCategoria(categoria_id);
     if (!categoriaExists) {
       await req.setFlash("error", "Categoría no válida.");
       return res.redirect(`/productos/edit/${id}`);
     }
 
+    // Realizar la actualización del producto
     await pool.query(
       "UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, cantidad = ?, url_imagen = ?, categoria_id = ? WHERE id = ?",
       [nombre, descripcion, precio, cantidad, url_imagen, categoria_id, id]
     );
 
+    // Mensaje de éxito
     await req.setFlash("success", "Producto actualizado exitosamente");
-    res.redirect("/productos"); // Redirige a la lista de productos
+    return res.redirect("/productos"); // Redirigir a la lista de productos
+
   } catch (error) {
     console.error(error);
     await req.setFlash("error", "Error al actualizar el producto.");
-    res.redirect(`/productos/edit/${id}`); // Redirige de nuevo al formulario de edición en caso de error
+    return res.redirect(`/productos/edit/${id}`); // Redirigir al formulario de edición si hay un error
   }
 };
+

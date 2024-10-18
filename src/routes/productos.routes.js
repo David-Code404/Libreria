@@ -18,7 +18,7 @@ router.get("/", isLoggedIn, renderProductos); // Renderiza la lista de productos
 router.get("/add", isLoggedIn, renderAddProducto); // Renderiza el formulario para agregar un nuevo producto
 router.post("/add", isLoggedIn, validator(createProductSchema), addProducto); // Maneja la creación de un producto
 router.get("/delete/:id", isLoggedIn, deleteProducto); // Maneja la eliminación de un producto
-router.get("/edit/:id", isLoggedIn, renderEditProducto); // Renderiza el formulario de edición de un producto
-router.post("/edit/:id", isLoggedIn, editProducto); // Maneja la actualización de un producto
+router.get("/edit/:id", isLoggedIn, renderEditProducto); // Mostrar formulario de edición
+router.post("/edit/:id", isLoggedIn, editProducto); // Actualizar producto
 
 export default router;
