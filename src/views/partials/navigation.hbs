@@ -2,7 +2,7 @@
   <div class="container">
     <a class="navbar-brand" href="/">
       <i class="fas fa-link"></i>
-      Libreria-SIS324
+      Libreria
     </a>
     <button
       class="navbar-toggler"
@@ -21,7 +21,7 @@
           <!-- Productos Dropdown -->
           <li class="nav-item dropdown">
             <a
-              class="nav-link dropdown-toggle"
+              class="nav-link dropdown-toggle {{#if (eq currentRoute 'productos')}}active{{/if}}"
               href="#"
               id="navbarDropdownProductos"
               role="button"
@@ -40,7 +40,7 @@
           <!-- Categories Dropdown -->
           <li class="nav-item dropdown">
             <a
-              class="nav-link dropdown-toggle"
+              class="nav-link dropdown-toggle {{#if (eq currentRoute 'categorias')}}active{{/if}}"
               href="#"
               id="navbarDropdownCategories"
               role="button"
@@ -59,7 +59,7 @@
           <!-- User Dropdown -->
           <li class="nav-item dropdown">
             <a
-              class="nav-link dropdown-toggle"
+              class="nav-link dropdown-toggle {{#if (eq currentRoute 'profile')}}active{{/if}}"
               href="#"
               id="navbarDropdownUser"
               role="button"
@@ -75,14 +75,13 @@
           </li>
         {{else}}
           <li class="nav-item">
-            <a class="nav-link" href="/signin">Ingresar</a>
+            <a class="nav-link {{#if (eq currentRoute 'signin')}}active{{/if}}" href="/signin">Ingresar</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/signup">Registrarse</a>
+            <a class="nav-link {{#if (eq currentRoute 'signup')}}active{{/if}}" href="/signup">Registrarse</a>
           </li>
         {{/if}}
       </ul>
     </div>
   </div>
 </nav>
-
