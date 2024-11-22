@@ -8,11 +8,12 @@ import categorias from "./categorias.routes.js"; // Cambia el nombre si correspo
 
 const router = Router();
 
-router.use(index);
-router.use(auth);
-router.use(user);
-router.use("/productos", productos);
-router.use("/categorias", categorias); // Agrega la ruta de categorías
+// Uso de rutas
+router.use(index); // Ruta para la página de inicio
+router.use(auth);  // Ruta para autenticación
+router.use(user);  // Ruta para gestión de usuarios
+router.use("/productos", productos); // Ruta para gestión de productos
+router.use("/categorias", categorias); // Ruta para gestión de categorías
 
 
 export default router;

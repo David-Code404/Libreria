@@ -2,3 +2,7 @@ npm install handlebars
 
 npm install
 
+npm run dev => para hacer correr
+
+
+localhost:4000 <= eso en internet buscas y aparece la paginaa

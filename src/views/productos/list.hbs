@@ -1,32 +1,332 @@
-<div class="container p-4">
-  <h1 class="text-center text-uppercase text-light mb-4">Lista de Productos</h1>
-  <div class="row">
-    {{#each productos}}
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12 p-2"> <!-- Ajuste de columnas para distintos tamaños de pantalla -->
-        <div class="card text-center bg-dark text-light h-100">
-          <div class="card-body">
-            <a href="{{url_imagen}}" target="_blank" class="text-light">
-              <img src="{{url_imagen}}" alt="{{nombre}}" class="img-fluid product-image" />
-              <h3 class="card-title text-uppercase">{{nombre}}</h3>
-            </a>
-            <p class="m-2">{{descripcion}}</p>
-            <p class="text-muted">Precio: ${{precio}} | Cantidad: {{cantidad}}</p>
-            <p class="text-muted">{{timeago created_at}}</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos y Carrito</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.24/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    .invoice-table th {
+      background-color: #007bff;
+      color: #fff;
+      text-align: left;
+      padding: 10px;
+    }
+    .invoice-table td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    .invoice-summary {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+    .invoice-summary .total {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .invoice-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .invoice-footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 12px;
+    }
 
-            <div class="btn-container">
-              <a class="btn btn-danger btn-sm" href="/productos/delete/{{id}}">Eliminar</a>
-              <a href="/productos/edit/{{id}}" class="btn btn-warning btn-sm">Editar</a>
+    /* Estilos adicionales para el carrito */
+    .cart-item {
+      display: flex;
+      align-items: center;
+      background-color: #343a40;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-item img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 20px;
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+      color: #f1f1f1;
+    }
+
+    .cart-item-name {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .cart-item-price, .cart-item-total {
+      font-size: 16px;
+      color: #bbb;
+    }
+
+    .cart-item-actions {
+      text-align: right;
+    }
+
+    .cart-total {
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #007bff;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .btn-secondary, .btn-primary {
+      width: 200px;
+    }
+
+    /* Factura */
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .invoice-table th, .invoice-table td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    .invoice-header {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    .invoice-summary {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .invoice-footer {
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+      margin-top: 30px;
+    }
+
+    .invoice-footer a {
+      color: #007bff;
+    }
+  </style>
+</head>
+<body class="bg-dark text-light">
+  <div class="container p-4">
+    <!-- Vista de Productos -->
+    <div id="product-list">
+      <h1 class="text-center text-uppercase mb-4">Lista de Productos</h1>
+      <div class="row">
+        {{#each productos}}
+          <div class="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
+            <div class="card text-center bg-dark text-light h-100">
+              <div class="card-body">
+                <a href="{{url_imagen}}" target="_blank" class="text-light">
+                  <img src="{{url_imagen}}" alt="{{nombre}}" class="img-fluid product-image mb-3" />
+                  <h3 class="card-title text-uppercase">{{nombre}}</h3>
+                </a>
+                <p class="m-2">{{descripcion}}</p>
+                <p class="text-muted">Precio: ${{precio}} | Cantidad: {{cantidad}}</p>
+                <p class="text-muted">{{timeago created_at}}</p>
+
+                <div class="btn-container d-flex flex-column align-items-center">
+                  <div class="d-flex align-items-center mb-2">
+                    <button class="btn btn-sm btn-secondary decrement-btn" data-id="{{id}}">-</button>
+                    <input type="number" class="form-control text-center mx-2 product-count-input" data-id="{{id}}" value="0" min="0" style="width: 60px;" />
+                    <button class="btn btn-sm btn-secondary increment-btn" data-id="{{id}}">+</button>
+                  </div>
+                  <button class="btn btn-success btn-sm add-to-cart-btn" data-id="{{id}}" data-nombre="{{nombre}}" data-precio="{{precio}}">Añadir al carrito</button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        {{else}}
+          <div class="col-md-4 mx-auto">
+            <div class="card card-body text-center bg-dark text-light">
+              <p>No hay productos guardados aún.</p>
+              <a href="/productos/add" class="text-success">¡Crea uno!</a>
+            </div>
+          </div>
+        {{/each}}
       </div>
-    {{else}}
-      <div class="col-md-4 mx-auto">
-        <div class="card card-body text-center bg-dark text-light">
-          <p>No hay productos guardados aún.</p>
-          <a href="/productos/add" class="text-success">¡Crea uno!</a>
-        </div>
+    </div>
+
+    <!-- Vista del Carrito -->
+    <div id="cart-view" class="d-none">
+      <h1 class="text-center text-uppercase mb-4">Carrito de Compras</h1>
+      <div id="cart-items"></div>
+      <div class="text-center mt-4">
+        <button id="empty-cart" class="btn btn-danger">Vaciar carrito</button>
+        <button id="generate-invoice" class="btn btn-primary">Generar Factura</button>
+        <button id="back-to-products" class="btn btn-secondary mt-2">Volver</button>
       </div>
-    {{/each}}
+    </div>
   </div>
-</div>
+
+  <script>
+    // Función para mostrar el carrito
+    function showCart() {
+      document.getElementById('product-list').classList.add('d-none'); // Ocultar lista de productos
+      document.getElementById('cart-view').classList.remove('d-none'); // Mostrar carrito
+      renderCart(); // Renderizar los datos del carrito
+    }
+
+    // Función para volver a los productos
+    document.getElementById('back-to-products').addEventListener('click', () => {
+      document.getElementById('product-list').classList.remove('d-none'); // Mostrar lista de productos
+      document.getElementById('cart-view').classList.add('d-none'); // Ocultar carrito
+    });
+
+    // Manejo del carrito y sus botones
+    document.querySelectorAll('.increment-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const productId = button.dataset.id;
+        const inputElement = document.querySelector(`.product-count-input[data-id="${productId}"]`);
+        let currentCount = parseInt(inputElement.value, 10) || 0;
+        inputElement.value = currentCount + 1;
+      });
+    });
+
+    document.querySelectorAll('.decrement-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const productId = button.dataset.id;
+        const inputElement = document.querySelector(`.product-count-input[data-id="${productId}"]`);
+        let currentCount = parseInt(inputElement.value, 10) || 0;
+        if (currentCount > 0) inputElement.value = currentCount - 1;
+      });
+    });
+
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const productId = button.dataset.id;
+        const inputElement = document.querySelector(`.product-count-input[data-id="${productId}"]`);
+        const productName = button.dataset.nombre;
+        const productPrice = button.dataset.precio;
+        const count = parseInt(inputElement.value, 10) || 0;
+
+        if (count > 0) {
+          // Guardar en localStorage
+          const cart = JSON.parse(localStorage.getItem('cart')) || [];
+          cart.push({
+            id: productId,
+            nombre: productName,
+            precio: productPrice,
+            cantidad: count,
+            url_imagen: button.closest('.card').querySelector('img').src  // Añadir imagen
+          });
+          localStorage.setItem('cart', JSON.stringify(cart));
+
+          // Mostrar el carrito
+          showCart();
+        } else {
+          alert('Por favor, selecciona una cantidad mayor a 0.');
+        }
+      });
+    });
+
+    // Eliminar un producto del carrito
+    function removeItemFromCart(productId) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart = cart.filter(item => item.id !== productId);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart(); // Actualizar la vista del carrito
+    }
+
+    // Vaciar todo el carrito
+    document.getElementById('empty-cart').addEventListener('click', () => {
+      localStorage.removeItem('cart');
+      renderCart(); // Actualizar la vista del carrito
+    });
+
+    // Renderizar los productos del carrito
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartContainer = document.getElementById('cart-items');
+      cartContainer.innerHTML = '';
+      let totalGeneral = 0;
+
+      if (cart.length > 0) {
+        cart.forEach(item => {
+          const itemTotal = item.precio * item.cantidad;
+          totalGeneral += itemTotal;
+
+          const itemHTML = `
+            <div class="cart-item">
+              <img src="${item.url_imagen}" alt="${item.nombre}" />
+              <div class="cart-item-details">
+                <div class="cart-item-name">${item.nombre}</div>
+                <div class="cart-item-price">Precio: $${item.precio}</div>
+                <div class="cart-item-total">Total: $${itemTotal.toFixed(2)}</div>
+              </div>
+              <div class="cart-item-actions">
+                <button class="btn btn-danger btn-sm" onclick="removeItemFromCart('${item.id}')">Eliminar</button>
+              </div>
+            </div>
+          `;
+          cartContainer.innerHTML += itemHTML;
+        });
+
+        const cartTotalHTML = `
+          <div class="cart-total">Total Carrito: $${totalGeneral.toFixed(2)}</div>
+        `;
+        cartContainer.innerHTML += cartTotalHTML;
+      } else {
+        cartContainer.innerHTML = '<p class="text-center">El carrito está vacío.</p>';
+      }
+    }
+
+    // Generar la factura en PDF
+    document.getElementById('generate-invoice').addEventListener('click', () => {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      if (cart.length === 0) {
+        alert('El carrito está vacío, no se puede generar la factura.');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(22);
+      doc.text("Factura de Compra", 105, 20, null, null, 'center');
+
+      doc.setFontSize(12);
+      doc.autoTable({
+        head: [['Producto', 'Cantidad', 'Precio', 'Total']],
+        body: cart.map(item => [
+          item.nombre,
+          item.cantidad,
+          `$${item.precio}`,
+          `$${(item.precio * item.cantidad).toFixed(2)}`
+        ]),
+        startY: 40,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 123, 255] },
+      });
+
+      let totalGeneral = cart.reduce((total, item) => total + item.precio * item.cantidad, 0);
+      
+      doc.setFontSize(14);
+      doc.text(`Total General: $${totalGeneral.toFixed(2)}`, 20, doc.lastAutoTable.finalY + 10);
+      doc.save("factura_compra.pdf");
+    });
+
+  </script>
+</body>
+</html>
+
