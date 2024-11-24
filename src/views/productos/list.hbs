@@ -8,6 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.24/jspdf.plugin.autotable.min.js"></script>
   <style>
+
     .invoice-table th {
       background-color: #007bff;
       color: #fff;
@@ -167,16 +168,53 @@
     </div>
 
     <!-- Vista del Carrito -->
-    <div id="cart-view" class="d-none">
-      <h1 class="text-center text-uppercase mb-4">Carrito de Compras</h1>
-      <div id="cart-items"></div>
-      <div class="text-center mt-4">
-        <button id="empty-cart" class="btn btn-danger">Vaciar carrito</button>
-        <button id="generate-invoice" class="btn btn-primary">Generar Factura</button>
-        <button id="back-to-products" class="btn btn-secondary mt-2">Volver</button>
+    <!-- Vista del Carrito con opciones de pago -->
+<div id="cart-view" class="d-none">
+  <h1 class="text-center text-uppercase mb-4">Carrito de Compras</h1>
+  <div id="cart-items"></div>
+  
+  
+  <div class="container mt-5">
+    <div class="payment-methods mt-4">
+      <h3 class="text-center mb-3">Forma de Pago</h3>
+      <div class="row">
+        <!-- Tarjeta de Crédito -->
+        <div class="col-md-4">
+          <div class="text-center">
+            <img src="/img/tarjeta2.jpg" alt="Tarjeta de Crédito" class="img-fluid" style="max-width: 100px;"> 
+            <p>Tarjeta de Crédito</p>
+          </div>
+        </div>
+        <!-- PayPal -->
+        <div class="col-md-4">
+          <div class="text-center">
+            <img src="/img/Paypal_2014_logo.png" alt="PayPal" class="img-fluid" style="max-width: 80px;">
+            <p>PayPal</p>
+          </div>
+        </div>
+        <!-- Pago en Efectivo -->
+        <div class="col-md-4">
+          <div class="text-center">
+            <img src="/img/pago-en-efectivo.png" alt="Pago en Efectivo" class="img-fluid" style="max-width: 100px;">
+            <p>Pago en Efectivo</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  
+
+  
+  <!-- Botones de acciones -->
+  <div class="text-center mt-4">
+    <button id="empty-cart" class="btn btn-danger">Vaciar carrito</button>
+    <button id="generate-invoice" class="btn btn-primary">Generar Factura</button>
+    <button id="back-to-products" class="btn btn-secondary mt-2">Volver</button>
+  </div>
+</div>
+
+
 
   <script>
     // Función para mostrar el carrito
@@ -325,6 +363,70 @@
       doc.text(`Total General: $${totalGeneral.toFixed(2)}`, 20, doc.lastAutoTable.finalY + 10);
       doc.save("factura_compra.pdf");
     });
+    // Función para mostrar el carrito
+function showCart() {
+  document.getElementById('product-list').classList.add('d-none'); // Ocultar lista de productos
+  document.getElementById('cart-view').classList.remove('d-none'); // Mostrar carrito
+  renderCart(); // Renderizar los datos del carrito
+}
+
+// Manejar la selección de la forma de pago
+let selectedPaymentMethod = null;
+
+document.querySelectorAll('.payment-methods img').forEach(image => {
+  image.addEventListener('click', () => {
+    // Desmarcar cualquier otra opción antes de seleccionar
+    document.querySelectorAll('.payment-methods img').forEach(img => {
+      img.style.border = 'none';
+    });
+
+    // Marcar la opción seleccionada
+    image.style.border = '2px solid #007bff';
+    selectedPaymentMethod = image.alt; // Guardar el nombre de la forma de pago seleccionada
+  });
+});
+
+// Generar la factura en PDF con forma de pago seleccionada
+document.getElementById('generate-invoice').addEventListener('click', () => {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+  if (cart.length === 0) {
+    alert('El carrito está vacío, no se puede generar la factura.');
+    return;
+  }
+
+  if (!selectedPaymentMethod) {
+    alert('Por favor, selecciona una forma de pago.');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFontSize(22);
+  doc.text("Factura de Compra", 105, 20, null, null, 'center');
+
+  doc.setFontSize(12);
+  doc.autoTable({
+    head: [['Producto', 'Cantidad', 'Precio', 'Total']],
+    body: cart.map(item => [
+      item.nombre,
+      item.cantidad,
+      `$${item.precio}`,
+      `$${(item.precio * item.cantidad).toFixed(2)}`
+    ]),
+    startY: 40,
+    theme: 'striped',
+    headStyles: { fillColor: [0, 123, 255] },
+  });
+
+  let totalGeneral = cart.reduce((total, item) => total + item.precio * item.cantidad, 0);
+
+  doc.setFontSize(14);
+  doc.text(`Total General: $${totalGeneral.toFixed(2)}`, 20, doc.lastAutoTable.finalY + 10);
+  doc.text(`Forma de Pago: ${selectedPaymentMethod}`, 20, doc.lastAutoTable.finalY + 20); // Mostrar la forma de pago seleccionada
+  doc.save("factura_compra.pdf");
+});
 
   </script>
 </body>
