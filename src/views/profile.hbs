@@ -1,19 +1,26 @@
 <div class="container p-4">
-  <div class="row">
-    <div class="col-md-4 mx-auto">
-      <div class="card card-body bg-dark text-white text-center">
-        <h1 class="fw-bold">Bienvenido, {{user.fullname}}</h1>
-        <h4>{{user.email}}</h4>
-        <p>{{timeago user.created_at}}</p>
-        <a href="/productos" class="btn btn-primary m-2">
-          Productos
-        </a>
-        <a href="/categorias" class="btn btn-secondary m-2">
-          Categorías
-        </a>
-        <a href="/usuarios" class="btn btn-secondary m-2">
-          Usuarios
-        </a>
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card bg-dark text-white shadow-lg">
+        <div class="card-body text-center">
+          <h1 class="fw-bold mb-3">Bienvenido, {{user.fullname}}</h1>
+          <h4 class="mb-2">{{user.email}}</h4>
+          <p class="mb-4 text-muted">{{timeago user.created_at}}</p>
+
+          <!-- Botones visibles para todos los usuarios -->
+          <div class="d-grid gap-2 mb-3">
+            <a href="/productos" class="btn btn-primary btn-lg">Productos</a>
+            
+          </div>
+
+          <!-- Enlaces visibles solo para administradores -->
+          {{#if (eq user.role "admin")}}
+          <div class="d-grid gap-2">
+            <a href="/categorias" class="btn btn-secondary btn-lg">Categorías</a>
+            <a href="/usuarios" class="btn btn-warning btn-lg">Usuarios</a>
+          </div>
+          {{/if}}
+        </div>
       </div>
     </div>
   </div>

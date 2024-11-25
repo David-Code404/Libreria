@@ -1,14 +1,140 @@
 <main class="index">
-  <header class="bg-image d-flex">
-    <div class="text-center m-auto p-5 bg-dark">
-      <h1 class="mb-1 display-1">Libreria</h1>
-      <h3 class="mb-5">
-        <em>LIBRERIA-SIS324 </em>
-      </h3>
-      <a class="btn btn-primary btn-lg" href="/signin">
-        Iniciar
+  <style>
+    /* Estilos personalizados */
+    .bg-image {
+      background-size: cover;
+      background-position: center;
+    }
+    .text-shadow {
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .btn-warning {
+      background-color: #f39c12;
+      border: none;
+    }
+    .btn-warning:hover {
+      background-color: #e67e22;
+    }
+    .testimonial {
+      border-left: 4px solid #f39c12;
+      padding-left: 20px;
+      font-style: italic;
+    }
+    /* Responsividad */
+    @media (max-width: 767px) {
+      .display-3 {
+        font-size: 2.5rem;
+      }
+      .card-img-top {
+        height: 200px;
+        object-fit: cover;
+      }
+      .text-shadow {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+
+  <!-- Cabecera con imagen de fondo y mejor diseño -->
+  <header class="bg-image d-flex align-items-center justify-content-center text-white position-relative" style="background-image: url('/path/to/your-image.jpg'); height: 100vh;">
+    <div class="overlay position-absolute top-0 left-0 w-100 h-100"></div>
+    <div class="text-center z-index-10 px-3">
+      <h1 class="mb-3 display-3 font-weight-bold text-shadow">Bienvenido a <span class="text-warning">Libreria-SIS324</span></h1>
+      <h3 class="mb-4 font-italic">El mejor lugar para encontrar todo lo que necesitas</h3>
+      <p class="mb-5 font-size-lg">Explora una gran variedad de libros, desde los más populares hasta los más raros. ¡Comienza tu aventura literaria hoy mismo!</p>
+      <a class="btn btn-warning btn-lg" href="/signin">
+        Iniciar Sesión
       </a>
     </div>
-    <div class="overlay"></div>
   </header>
+
+  <!-- Sección de características o beneficios -->
+  <section class="container my-5">
+    <div class="row text-center">
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-lg border-0">
+          <img src="/path/to/book-image-1.jpg" class="card-img-top" alt="Libros populares">
+          <div class="card-body">
+            <h5 class="card-title">Libros Populares</h5>
+            <p class="card-text">Encuentra los títulos más leídos y recomendados por otros lectores.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-lg border-0">
+          <img src="/path/to/book-image-2.jpg" class="card-img-top" alt="Novedades">
+          <div class="card-body">
+            <h5 class="card-title">Novedades</h5>
+            <p class="card-text">Mantente al tanto de las últimas publicaciones y lanzamientos.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-lg border-0">
+          <img src="/path/to/book-image-3.jpg" class="card-img-top" alt="Ofertas especiales">
+          <div class="card-body">
+            <h5 class="card-title">Ofertas Especiales</h5>
+            <p class="card-text">Aprovecha nuestras promociones y descuentos exclusivos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- Sección de libros recomendados -->
+<section class="bg-light py-5">
+  <div class="container text-center">
+    <h2 class="display-4 mb-4">¡Nuestros Productos!</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card shadow-sm rounded">
+          <img src="/path/to/book-image-1.jpg" class="card-img-top" alt="Libro recomendado 1">
+          <div class="card-body">
+            <h5 class="card-title">El Gran Viaje</h5>
+            <p class="card-text">Una épica aventura que te llevará por los rincones más lejanos del mundo. ¡No podrás soltarlo!</p>
+            <a href="/productos" class="btn btn-warning">Ver más</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm rounded">
+          <img src="/path/to/book-image-2.jpg" class="card-img-top" alt="Libro recomendado 2">
+          <div class="card-body">
+            <h5 class="card-title">La Magia del Tiempo</h5>
+            <p class="card-text">Un relato que juega con el tiempo, la magia y las emociones más profundas. ¡Un libro para reflexionar!</p>
+            <a href="/productos" class="btn btn-warning">Ver más</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm rounded">
+          <img src="/path/to/book-image-3.jpg" class="card-img-top" alt="Libro recomendado 3">
+          <div class="card-body">
+            <h5 class="card-title">Sombras y Luz</h5>
+            <p class="card-text">Un thriller que te mantendrá al borde de tu asiento hasta la última página. ¡Intriga y suspenso garantizados!</p>
+            <a href="/productos" class="btn btn-warning">Ver más</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- Llamada a la acción para registrarse -->
+  <section class="text-white text-center py-5" style="background-color: #2c3e50;">
+    <div class="container">
+      <h2 class="display-4 mb-4">¡Comienza tu viaje literario hoy!</h2>
+      <p class="mb-4">Regístrate ahora y disfruta de una experiencia única en el mundo de los libros.</p>
+      <a href="/signup" class="btn btn-lg btn-light">Regístrate</a>
+    </div>
+  </section>
 </main>

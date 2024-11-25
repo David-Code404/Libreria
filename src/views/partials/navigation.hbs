@@ -2,7 +2,7 @@
   <div class="container">
     <a class="navbar-brand" href="/">
       <i class="fas fa-link"></i>
-      Libreria
+      Librería
     </a>
     <button
       class="navbar-toggler"
@@ -18,8 +18,6 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         {{#if user}}
-          <!-- Carrito -->
-          
           <!-- Productos Dropdown -->
           <li class="nav-item dropdown">
             <a
@@ -33,13 +31,17 @@
               Productos
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownProductos">
-              <a class="dropdown-item" href="/productos">Productos</a>
+              <a class="dropdown-item" href="/productos">Lista de Productos</a>
+              <!-- Solo los administradores pueden añadir productos -->
+              {{#if (eq user.role "admin")}}
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/productos/add">Añadir Productos</a>
+              {{/if}}
             </div>
           </li>
 
-          <!-- Categorías Dropdown -->
+          <!-- Categorías Dropdown (Solo admin) -->
+          {{#if (eq user.role "admin")}}
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle {{#if (eq currentRoute 'categorias')}}active{{/if}}"
@@ -49,16 +51,18 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Categorias
+              Categorías
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownCategories">
-              <a class="dropdown-item" href="/categorias">Categorias</a>
+              <a class="dropdown-item" href="/categorias">Lista de Categorías</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/categorias/add">Añadir Categorias</a>
+              <a class="dropdown-item" href="/categorias/add">Añadir Categorías</a>
             </div>
           </li>
+          {{/if}}
 
-          <!-- Usuarios Dropdown -->
+          <!-- Usuarios Dropdown (Solo admin) -->
+          {{#if (eq user.role "admin")}}
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle {{#if (eq currentRoute 'usuarios')}}active{{/if}}"
@@ -76,6 +80,7 @@
               <a class="dropdown-item" href="/usuarios/add">Añadir Usuario</a>
             </div>
           </li>
+          {{/if}}
 
           <!-- User Dropdown -->
           <li class="nav-item dropdown">
@@ -94,8 +99,8 @@
               <li><a class="dropdown-item" href="/logout">Salir</a></li>
             </ul>
           </li>
-          
         {{else}}
+          <!-- Opciones para usuarios no autenticados -->
           <li class="nav-item">
             <a class="nav-link {{#if (eq currentRoute 'signin')}}active{{/if}}" href="/signin">Ingresar</a>
           </li>

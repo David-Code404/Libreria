@@ -1,5 +1,14 @@
 import { pool } from "../database.js";
 
+// Verifica si el usuario es administrador
+const checkAdminRole = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    return next(); // El usuario es admin, puede proceder
+  }
+  req.setFlash("error", "No tienes permisos para acceder a esta sección.");
+  res.redirect("/"); // Redirige al usuario a una página segura si no es admin
+};
+
 // Función para verificar si una categoría existe
 const verificarCategoria = async (categoria_id) => {
   const [rows] = await pool.query("SELECT id FROM categorias WHERE id = ?", [
@@ -8,64 +17,98 @@ const verificarCategoria = async (categoria_id) => {
   return rows.length > 0; // Retorna true si la categoría existe
 };
 
-// Función para renderizar el formulario de agregar producto
+// Renderiza la lista de productos (solo admin puede ver más detalles)
+export const renderProductos = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      const [productos] = await pool.query(`
+        SELECT p.id, p.nombre, p.descripcion, p.precio, p.cantidad, p.url_imagen, c.nombre AS categoria_nombre
+        FROM productos p
+        JOIN categorias c ON p.categoria_id = c.id
+      `);
+      res.render("productos/list", { productos }); // Vista solo para mostrar productos al usuario
+    } else {
+      // Admin puede ver todo, productos completos
+      const [productos] = await pool.query(`
+        SELECT p.*, c.nombre AS categoria_nombre
+        FROM productos p
+        JOIN categorias c ON p.categoria_id = c.id
+      `);
+      res.render("productos/list", { productos }); // Vista con más detalles para admins
+    }
+  } catch (error) {
+    console.error(error);
+    req.setFlash("error", "Error al obtener los productos");
+    res.redirect("/productos");
+  }
+};
+
+// Renderiza el formulario de agregar producto (solo admin)
 export const renderAddProducto = async (req, res) => {
+  if (req.user.role !== "admin") {
+    req.setFlash("error", "No tienes permisos para agregar productos.");
+    return res.redirect("/productos"); // Redirige si no es admin
+  }
+
   const [categorias] = await pool.query("SELECT * FROM categorias"); // Obtiene las categorías
   res.render("productos/add", { categorias }); // Pasa las categorías a la vista
 };
 
-// Función para agregar un producto
+// Agrega un nuevo producto (solo admin)
 export const addProducto = async (req, res) => {
+  if (req.user.role !== "admin") {
+    req.setFlash("error", "No tienes permisos para agregar productos.");
+    return res.redirect("/productos"); // Redirige si no es admin
+  }
+
   try {
-    const { nombre, descripcion, precio, cantidad, url_imagen, categoria_id } =
-      req.body;
+    const { nombre, descripcion, precio, cantidad, url_imagen, categoria_id } = req.body;
 
     const categoriaExists = await verificarCategoria(categoria_id);
     if (!categoriaExists) {
-      await req.setFlash("error", "Categoría no válida.");
+      req.setFlash("error", "Categoría no válida.");
       return res.redirect("/productos/add");
     }
 
     await pool.query("INSERT INTO productos SET ?", [
-      {
-        nombre,
-        descripcion,
-        precio,
-        cantidad,
-        url_imagen,
-        categoria_id,
-      },
+      { nombre, descripcion, precio, cantidad, url_imagen, categoria_id },
     ]);
-    await req.setFlash("success", "Producto Guardado Exitosamente");
+    req.setFlash("success", "Producto Guardado Exitosamente");
     res.redirect("/productos");
   } catch (error) {
     console.error(error);
-    await req.setFlash("error", "Error al guardar el producto.");
+    req.setFlash("error", "Error al guardar el producto.");
     res.redirect("/productos/add");
   }
 };
 
-// Función para renderizar la lista de productos
-export const renderProductos = async (req, res) => {
-  const [rows] = await pool.query(`
-    SELECT p.*, c.nombre AS categoria_nombre
-    FROM productos p
-    JOIN categorias c ON p.categoria_id = c.id
-  `);
-  res.render("productos/list", { productos: rows });
-};
-
-// Función para eliminar un producto
+// Elimina un producto (solo admin)
 export const deleteProducto = async (req, res) => {
   const { id } = req.params;
-  await pool.query("DELETE FROM productos WHERE id = ?", [id]);
-  await req.setFlash("success", `Producto ${id} Eliminado Exitosamente`);
-  return res.redirect("/productos");
+  if (req.user.role !== "admin") {
+    req.setFlash("error", "No tienes permisos para eliminar productos.");
+    return res.redirect("/productos"); // Redirige si no es admin
+  }
+
+  try {
+    await pool.query("DELETE FROM productos WHERE id = ?", [id]);
+    req.setFlash("success", `Producto ${id} Eliminado Exitosamente`);
+    return res.redirect("/productos");
+  } catch (error) {
+    console.error(error);
+    req.setFlash("error", "Error al eliminar el producto");
+    res.redirect("/productos");
+  }
 };
 
-// Función para renderizar el formulario de edición
+// Renderiza el formulario de edición de producto (solo admin)
 export const renderEditProducto = async (req, res) => {
   const { id } = req.params; // Obtiene el ID del producto desde la URL
+  if (req.user.role !== "admin") {
+    req.setFlash("error", "No tienes permisos para editar productos.");
+    return res.redirect("/productos"); // Redirige si no es admin
+  }
+
   try {
     // Consulta el producto de la base de datos
     const [producto] = await pool.query("SELECT * FROM productos WHERE id = ?", [id]);
@@ -86,36 +129,33 @@ export const renderEditProducto = async (req, res) => {
   }
 };
 
-
-// Función para actualizar un producto
-// Controlador para actualizar un producto
+// Actualiza un producto (solo admin)
 export const editProducto = async (req, res) => {
   const { id } = req.params; // Obtener el ID del producto
-  const { nombre, descripcion, precio, cantidad, url_imagen, categoria_id } =
-    req.body;
+  const { nombre, descripcion, precio, cantidad, url_imagen, categoria_id } = req.body;
+
+  if (req.user.role !== "admin") {
+    req.setFlash("error", "No tienes permisos para editar productos.");
+    return res.redirect("/productos"); // Redirige si no es admin
+  }
 
   try {
-    // Verificar que la categoría existe
     const categoriaExists = await verificarCategoria(categoria_id);
     if (!categoriaExists) {
-      await req.setFlash("error", "Categoría no válida.");
+      req.setFlash("error", "Categoría no válida.");
       return res.redirect(`/productos/edit/${id}`);
     }
 
-    // Realizar la actualización del producto
     await pool.query(
       "UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, cantidad = ?, url_imagen = ?, categoria_id = ? WHERE id = ?",
       [nombre, descripcion, precio, cantidad, url_imagen, categoria_id, id]
     );
 
-    // Mensaje de éxito
-    await req.setFlash("success", "Producto actualizado exitosamente");
-    return res.redirect("/productos"); // Redirigir a la lista de productos
-
+    req.setFlash("success", "Producto actualizado exitosamente");
+    return res.redirect("/productos"); // Redirige a la lista de productos
   } catch (error) {
     console.error(error);
-    await req.setFlash("error", "Error al actualizar el producto.");
-    return res.redirect(`/productos/edit/${id}`); // Redirigir al formulario de edición si hay un error
+    req.setFlash("error", "Error al actualizar el producto.");
+    return res.redirect(`/productos/edit/${id}`); // Redirige al formulario de edición si hay un error
   }
 };
-
