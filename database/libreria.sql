@@ -1,4 +1,31 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 25-11-2024 a las 04:49:06
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.0.30
 
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de datos: `libreria`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categorias`
+--
 
 CREATE TABLE `categorias` (
   `id` int(11) NOT NULL,
@@ -40,9 +67,9 @@ CREATE TABLE `links` (
 --
 
 INSERT INTO `links` (`id`, `title`, `url`, `description`, `user_id`, `created_at`) VALUES
-(1, 'Guía de Matemáticas', 'https://matematicas.com/guia', 'Recurso para aprender matemáticas básicas', 1, '2024-11-16 17:22:40'),
-(2, 'Técnicas de Estudio', 'https://estudio.com/tecnicas', 'Métodos efectivos para estudiar', 2, '2024-11-16 17:22:40'),
-(3, 'Proyectos Creativos', 'https://arteyproyectos.com', 'Ideas para arte y manualidades', 3, '2024-11-16 17:22:40');
+(1, 'Guía de Matemáticas', 'https://matematicas.com/guia', 'Recurso para aprender matemáticas básicas', 1, '2024-11-16 21:22:40'),
+(2, 'Técnicas de Estudio', 'https://estudio.com/tecnicas', 'Métodos efectivos para estudiar', 2, '2024-11-16 21:22:40'),
+(3, 'Proyectos Creativos', 'https://arteyproyectos.com', 'Ideas para arte y manualidades', 3, '2024-11-16 21:22:40');
 
 -- --------------------------------------------------------
 
@@ -92,7 +119,14 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
-('S8Ezbb5hlOBn99ercH9yBwCRY7MoR4py', 1731965110, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"passport\":{\"user\":5},\"flash\":{}}');
+('mHxQAI_QFtrxTH7WpJ8F7REK4dYOmyRa', 1732581768, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"}}'),
+('wZ8lA-AHywcgrg2aC-hIVuLjzv-rKpTE', 1732592843, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"}}'),
+('wZ8lA-AHywcgrg2aC-hIVuLjzv-rKpTE', 1732592843, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"flash\":{}}'),
+('wZ8lA-AHywcgrg2aC-hIVuLjzv-rKpTE', 1732592843, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"flash\":{}}'),
+('wZ8lA-AHywcgrg2aC-hIVuLjzv-rKpTE', 1732592843, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"flash\":{}}'),
+('wZ8lA-AHywcgrg2aC-hIVuLjzv-rKpTE', 1732592843, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"flash\":{}}'),
+('wZ8lA-AHywcgrg2aC-hIVuLjzv-rKpTE', 1732592843, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"flash\":{}}'),
+('wZ8lA-AHywcgrg2aC-hIVuLjzv-rKpTE', 1732592843, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"flash\":{}}');
 
 -- --------------------------------------------------------
 
@@ -100,26 +134,46 @@ INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
 -- Estructura de tabla para la tabla `users`
 --
 
--- --------------------------------------------------------
--- Estructura de tabla para la tabla `users` con campo `role`
--- --------------------------------------------------------
-
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `fullname` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(64) NOT NULL,
-  `role` enum('admin', 'user') NOT NULL DEFAULT 'user',  -- Campo para diferenciar entre admin y usuario
+  `role` enum('admin','user') NOT NULL DEFAULT 'user',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
--- Volcado de datos para la tabla `users` con roles
--- --------------------------------------------------------
+--
+-- Volcado de datos para la tabla `users`
+--
 
 INSERT INTO `users` (`id`, `fullname`, `email`, `password`, `role`, `created_at`) VALUES
-(1, 'John Carter', 'john@gmail.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'admin', '2024-11-16 17:20:52'),
-(2, 'Alice Smith', 'alice@example.com', '4e40e8ffe0ee32fa53e139147ed559229a5930f89c2204706fc174beb36210b3', 'user', '2024-11-16 17:22:18'),
-(3, 'Bob Johnson', 'bob@example.com', 'ed4d9437294706c60027d39427f6f5850870625544bb77722aac19f97495b2b7', 'user', '2024-11-16 17:22:18'),
-(4, 'Charlie Brown', 'charlie@example.com', '22ad18a03fd26627225366c2337f1c93693c89fc89b62b8dff3d393e9761d139', 'user', '2024-11-16 17:22:18'),
-(5, 'Jose David', 'josesucullani@gmail.com', '$2a$10$rB9H.emMvto4X6Mk9zR6eemmvM8xV21kkctAoKZu1TuhY3DZEELIm', 'user', '2024-11-16 17:24:22');
+(17, 'david', 'administrador@gmail.com', '$2a$10$Cfkh9lo8MV7kwTLFlFHuEu0zzuJ3H6rrBAhyWgaSXRVXKyQZgvCKm', 'user', '2024-11-25 00:56:22'),
+(18, 'prueba1', 'prueba1@gmail.com', '$2a$10$I9ypBQDzq/Yn6fgCe74K5OvoG3cGhE6ZuQQkPcS3da2wbIWjju6.C', 'user', '2024-11-25 00:57:05'),
+(19, 'Jose David Quispe Sucullani', 'josesucullani@gmail.com', '$2a$10$wb5blSh/V4fpv4kpQI51J.zUXa0m27rJILUV3ZiQ2W.vTRCnZKDb6', 'admin', '2024-11-25 00:59:18'),
+(20, 'prueba1', 'pruebacambio@gmail.com', '$2a$10$PH3ySPAysJQRWmQ9Bwv4s.z9uKyGmEbicKQOgTJ723pVwPP5la8HW', 'user', '2024-11-25 03:47:08');
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
