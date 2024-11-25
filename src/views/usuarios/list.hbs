@@ -1,0 +1,22 @@
+<div class="container p-4">
+  <h1 class="text-center text-uppercase text-light mb-4">Lista de Usuarios</h1>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <!-- Iteramos sobre la lista de usuarios -->
+    {{#each usuarios}}
+      <div class="col">
+        <div class="user-card card text-center bg-dark text-light">
+          <div class="card-body">
+            <h3 class="card-title text-uppercase">{{this.fullname}}</h3>
+            <p class="card-text"><strong>Email:</strong> {{this.email}}</p>
+            <p class="card-text"><strong>Rol:</strong> {{this.role}}</p>
+            <p class="card-text"><strong>Fecha de Registro:</strong> {{this.created_at}}</p>
+            <div class="btn-container">
+              <a href="/usuarios/edit/{{this.id}}" class="btn btn-warning">Editar</a>
+              <a href="/usuarios/delete/{{this.id}}" class="btn btn-danger">Eliminar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>

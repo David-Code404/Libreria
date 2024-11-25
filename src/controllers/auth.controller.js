@@ -6,7 +6,7 @@ import { pool } from "../database.js";
 export const renderSignUp = (req, res) => res.render("auth/signup");
 
 export const signUp = async (req, res, next) => {
-  const { fullname, email, password1 } = req.body;
+  const { fullname, email, password1, role } = req.body; // Capturamos el rol del formulario
 
   const password = await encryptPassword(password1);
 
@@ -16,6 +16,7 @@ export const signUp = async (req, res, next) => {
       fullname,
       email,
       password,
+      role: role || "user", // Asignamos el rol 'user' por defecto si no se seleccionó
     });
 
     req.login(
@@ -23,12 +24,13 @@ export const signUp = async (req, res, next) => {
         id: result.insertId,
         fullname,
         email,
+        role: role || "user", // También añadimos el rol a la sesión
       },
       (err) => {
         if (err) {
           return next(err);
         }
-        return res.redirect("/productos"); // Cambiado a productos si es necesario
+        return res.redirect("/productos"); // Redirigimos a productos o la ruta correspondiente
       }
     );
   } catch (error) {

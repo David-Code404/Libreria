@@ -1,57 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Tiempo de generación: 17-11-2024 a las 22:27:10
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Base de datos: `libreria`
---
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `carrito`
---
-
-CREATE TABLE `carrito` (
-  `id` int(11) NOT NULL,
-  `producto_id` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL DEFAULT 1,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `carrito`
---
-
-INSERT INTO `carrito` (`id`, `producto_id`, `cantidad`, `created_at`, `updated_at`) VALUES
-(1,  1, 2, '2024-11-16 17:20:52', '2024-11-16 17:20:52'),
-(2,  3, 1, '2024-11-16 17:20:52', '2024-11-16 17:20:52'),
-(3,  6, 5, '2024-11-16 17:20:52', '2024-11-16 17:20:52'),
-(4,  1, 3, '2024-11-16 17:22:48', '2024-11-16 17:22:48'),
-(5,  2, 1, '2024-11-16 17:22:48', '2024-11-16 17:22:48'),
-(6,  3, 2, '2024-11-16 17:22:48', '2024-11-16 17:22:48');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `categorias`
---
 
 CREATE TABLE `categorias` (
   `id` int(11) NOT NULL,
@@ -153,128 +100,26 @@ INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
 -- Estructura de tabla para la tabla `users`
 --
 
+-- --------------------------------------------------------
+-- Estructura de tabla para la tabla `users` con campo `role`
+-- --------------------------------------------------------
+
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `fullname` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(64) NOT NULL,
+  `role` enum('admin', 'user') NOT NULL DEFAULT 'user',  -- Campo para diferenciar entre admin y usuario
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `users`
---
+-- --------------------------------------------------------
+-- Volcado de datos para la tabla `users` con roles
+-- --------------------------------------------------------
 
-INSERT INTO `users` (`id`, `fullname`, `email`, `password`, `created_at`) VALUES
-(1, 'John Carter', 'john@gmail.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', '2024-11-16 17:20:52'),
-(2, 'Alice Smith', 'alice@example.com', '4e40e8ffe0ee32fa53e139147ed559229a5930f89c2204706fc174beb36210b3', '2024-11-16 17:22:18'),
-(3, 'Bob Johnson', 'bob@example.com', 'ed4d9437294706c60027d39427f6f5850870625544bb77722aac19f97495b2b7', '2024-11-16 17:22:18'),
-(4, 'Charlie Brown', 'charlie@example.com', '22ad18a03fd26627225366c2337f1c93693c89fc89b62b8dff3d393e9761d139', '2024-11-16 17:22:18'),
-(5, 'Jose David', 'josesucullani@gmail.com', '$2a$10$rB9H.emMvto4X6Mk9zR6eemmvM8xV21kkctAoKZu1TuhY3DZEELIm', '2024-11-16 17:24:22');
-
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `carrito`
---
-ALTER TABLE `carrito`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `producto_id` (`producto_id`);
-
---
--- Indices de la tabla `categorias`
---
-ALTER TABLE `categorias`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `links`
---
-ALTER TABLE `links`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indices de la tabla `productos`
---
-ALTER TABLE `productos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `categoria_id` (`categoria_id`);
-
---
--- Indices de la tabla `sessions`
---
-ALTER TABLE `sessions`
-  ADD PRIMARY KEY (`session_id`);
-
---
--- Indices de la tabla `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `carrito`
---
-ALTER TABLE `carrito`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT de la tabla `categorias`
---
-ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT de la tabla `links`
---
-ALTER TABLE `links`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `productos`
---
-ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT de la tabla `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `carrito`
---
-ALTER TABLE `carrito`
-  ADD CONSTRAINT `carrito_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `carrito_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `links`
---
-ALTER TABLE `links`
-  ADD CONSTRAINT `links_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `productos`
---
-ALTER TABLE `productos`
-  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE CASCADE;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+INSERT INTO `users` (`id`, `fullname`, `email`, `password`, `role`, `created_at`) VALUES
+(1, 'John Carter', 'john@gmail.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'admin', '2024-11-16 17:20:52'),
+(2, 'Alice Smith', 'alice@example.com', '4e40e8ffe0ee32fa53e139147ed559229a5930f89c2204706fc174beb36210b3', 'user', '2024-11-16 17:22:18'),
+(3, 'Bob Johnson', 'bob@example.com', 'ed4d9437294706c60027d39427f6f5850870625544bb77722aac19f97495b2b7', 'user', '2024-11-16 17:22:18'),
+(4, 'Charlie Brown', 'charlie@example.com', '22ad18a03fd26627225366c2337f1c93693c89fc89b62b8dff3d393e9761d139', 'user', '2024-11-16 17:22:18'),
+(5, 'Jose David', 'josesucullani@gmail.com', '$2a$10$rB9H.emMvto4X6Mk9zR6eemmvM8xV21kkctAoKZu1TuhY3DZEELIm', 'user', '2024-11-16 17:24:22');

@@ -5,7 +5,7 @@ import path from "path";
 import { create } from "express-handlebars";
 import passport from "passport";
 import cookieParser from "cookie-parser";
-import flash from "connect-flash";
+
 import session from "express-session";
 import expressMySQLSession from "express-mysql-session";
 import { promiseConnectFlash } from "async-connect-flash";

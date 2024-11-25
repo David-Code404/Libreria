@@ -1,0 +1,53 @@
+<div class="container p-4">
+  <div class="row">
+    <div class="col-md-4 mx-auto">
+      <div class="card bg-dark border border-dark">
+        <div class="card-body">
+          <form action="/usuarios/edit/{{usuario.id}}" method="POST">
+            <div class="form-group">
+              <input
+                type="text"
+                name="fullname"
+                class="form-control bg-dark text-light"
+                placeholder="Nombre Completo"
+                value="{{usuario.fullname}}"
+                autofocus
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="email"
+                name="email"
+                class="form-control bg-dark text-light"
+                placeholder="Correo Electrónico"
+                value="{{usuario.email}}"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="password"
+                name="password"
+                class="form-control bg-dark text-light"
+                placeholder="Nueva Contraseña (dejar en blanco si no desea cambiarla)"
+              />
+            </div>
+
+            <!-- Campo de Rol (solo "user" permitido) -->
+            <div class="form-group">
+              <label for="role" class="text-light">Rol:</label>
+              <select name="role" class="form-control bg-dark text-light" required disabled>
+                <option value="user" selected>Usuario</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <button class="btn btn-success btn-block">
+                Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
