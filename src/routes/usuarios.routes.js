@@ -19,4 +19,5 @@ router.get("/delete/:id", isLoggedIn, deleteUser); // Elimina un usuario
 router.get("/edit/:id", isLoggedIn, renderEditUser); // Renderiza el formulario para editar un usuario
 router.post("/edit/:id", isLoggedIn, editUser); // Actualiza un usuario
 
+
 export default router;

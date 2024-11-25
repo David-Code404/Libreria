@@ -20,47 +20,44 @@ export const renderAddUser = (req, res) => {
 // Agrega un nuevo usuario
 
 
+export const addUser = async (req, res, next) => {
+  const { fullname, email, password1, role } = req.body; // Capturamos el rol del formulario
 
+  const password = await encryptPassword(password1);
 
-
-
-export const addUser = async (req, res) => {
   try {
-    const { fullname, email, password, confirmPassword, role } = req.body;
+    // Guardando en la base de datos
+    const [result] = await pool.query("INSERT INTO users SET ?", {
+      fullname,
+      email,
+      password,
+      role: role || "user", // Asignamos el rol 'user' por defecto si no se seleccionó
+    });
 
-    // Verificar si las contraseñas coinciden
-    if (password !== confirmPassword) {
-      await req.setFlash("error", "Las contraseñas no coinciden.");
-      return res.redirect("/usuarios/add");
-    }
-
-    // Encriptar la contraseña
-    const hashedPassword = await bcrypt.hash(password, 10); // Aquí es donde encriptas
-
-    // Validar si el rol es válido
-    if (role !== 'user' && role !== 'admin') {
-      await req.setFlash("error", "Rol no válido.");
-      return res.redirect("/usuarios/add");
-    }
-
-    // Insertar el usuario con la contraseña encriptada
-    await pool.query("INSERT INTO users SET ?", [
+    req.login(
       {
+        id: result.insertId,
         fullname,
         email,
-        password: hashedPassword, // Guardamos la contraseña encriptada
-        role,
+        role: role || "user", // También añadimos el rol a la sesión
       },
-    ]);
-
-    await req.setFlash("success", "Usuario guardado exitosamente.");
-    res.redirect("/usuarios");
+      (err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.redirect("/productos"); // Redirigimos a productos o la ruta correspondiente
+      }
+    );
   } catch (error) {
-    console.error(error);
-    await req.setFlash("error", "Error al guardar el usuario.");
-    res.redirect("/usuarios/add");
+    // Manejo de errores
+    console.error("Error al crear usuario:", error);
+    req.flash("error", "Error al crear usuario, intente de nuevo.");
+    res.redirect("/usuarios");
   }
 };
+
+
+
 
 
 
